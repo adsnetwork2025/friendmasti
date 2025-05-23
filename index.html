@@ -1,101 +1,94 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Developer Hridoy</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-            background-color: #f4f4f9;
-        }
-        h1 {
-            color: #333;
-        }
-        #micButton {
-            padding: 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 30px;
-        }
-        #micButton:active {
-            background-color: #45a049;
-        }
-        #response {
-            margin-top: 30px;
-            font-size: 18px;
-            color: #555;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Hridoy - ভয়েস রোবট</title>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    img {
+      width: 250px;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+    }
+    #speakBtn {
+      background-color: #00bfff;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #speakBtn:hover {
+      background-color: #0099cc;
+    }
+    #status {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
+  <h1>Hridoy - আপনার বন্ধু রোবট</h1>
+  <img src="1000002598.jpg" alt="Hridoy Robot">
+  <p id="status">প্রশ্ন করতে নিচের বোতামে চাপ দিন এবং বলুন...</p>
+  <button id="speakBtn">প্রশ্ন করুন</button>
 
-    <h1>Developer Hridoy</h1>
-    <button id="micButton">🎤</button>
-    <p id="response">আপনার কমান্ড দিন...</p>
+  <script>
+    const questions = {
+      "তোমার নাম কি": "আমার নাম আমার মালিক দিয়েছে হৃদয়।",
+      "তোমার বাবার নাম কি": "আমার বাবার নাম মোহাম্মদ কামাল হোসেন।",
+      "তোমার মায়ের নাম কি": "আমার মায়ের নাম ফাহমিদা আখান।",
+      "তোমার জেলা কোথায়": "নোয়াখালী।",
+      "তুমি কবে তৈরি হয়েছো": "আমি তৈরি হয়েছি ২০২৫ সালে।"
+      // আরও প্রশ্ন এবং উত্তর এখানে যোগ করুন
+    };
 
-    <script>
-        // Speech Recognition API Initialization
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'bn-BD'; // Bangla Language
-        recognition.continuous = false;
-        recognition.interimResults = false;
+    const speak = (text) => {
+      const msg = new SpeechSynthesisUtterance();
+      msg.text = text;
+      msg.lang = 'bn-BD';
+      window.speechSynthesis.speak(msg);
+    };
 
-        // Text-to-Speech API Initialization
-        const synth = window.speechSynthesis;
+    const recognizeSpeech = () => {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('আপনার ব্রাউজার ভয়েস রিকগনিশন সাপোর্ট করে না');
+        return;
+      }
 
-        // Function to handle speech recognition result
-        recognition.onresult = function(event) {
-            const userCommand = event.results[0][0].transcript;
-            document.getElementById('response').textContent = `আপনার কমান্ড: ${userCommand}`;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'bn-BD';
+      recognition.start();
 
-            // Determine the response based on the command
-            let response = '';
-            switch (userCommand) {
-                case 'হৃদয়ের গার্লফ্রেন্ডের নাম কি':
-                    response = 'জান্নাত';
-                    break;
-                case 'মাহমুদের গার্লফ্রেন্ডের নাম কি':
-                    response = 'খাদিজা';
-                    break;
-                case 'তানিমের গার্লফ্রেন্ডের নাম কি':
-                    response = 'মাহিমা';
-                    break;
-                case 'শহীদুল্লাহর গার্লফ্রেন্ডের নাম কি':
-                    response = 'নাইমা';
-                    break;
-                case 'ইমরুলের গার্লফ্রেন্ডের নাম কি':
-                    response = 'তানিয়া';
-                    break;
-                case 'মাহমুদুল্লাহর গার্লফ্রেন্ডের নাম কি':
-                    response = 'লামিয়া';
-                    break;
-                case 'ইয়াসিনের গার্লফ্রেন্ডের নাম কি':
-                    response = 'তানহা';
-                    break;
-                case 'সিয়াম এর গার্লফ্রেন্ডের নাম কি':
-                    response = 'মোহনা';
-                    break;
-                default:
-                    response = 'দুঃখিত, আমি আপনার কমান্ডটি বুঝতে পারিনি।';
-            }
+      document.getElementById("status").innerText = "শুনছে... প্রশ্ন করুন";
 
-            // Speak the response using Text-to-Speech
-            const utterance = new SpeechSynthesisUtterance(response);
-            utterance.lang = 'bn-BD'; // Bangla Language
-            synth.speak(utterance);
-        };
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript.trim();
+        document.getElementById("status").innerText = `আপনি বললেন: "${transcript}"`;
 
-        // Start speech recognition on button click
-        document.getElementById('micButton').addEventListener('click', function() {
-            recognition.start();
-        });
-    </script>
+        const answer = questions[transcript];
+        if (answer) {
+          speak(answer);
+        } else {
+          speak("দুঃখিত, আমি এই প্রশ্নের উত্তর জানি না।");
+        }
+      };
 
+      recognition.onerror = function(event) {
+        document.getElementById("status").innerText = "ভয়েস শুনতে সমস্যা হয়েছে। আবার চেষ্টা করুন।";
+      };
+    };
+
+    document.getElementById("speakBtn").addEventListener("click", recognizeSpeech);
+  </script>
 </body>
 </html>
